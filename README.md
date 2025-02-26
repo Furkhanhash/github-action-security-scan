@@ -1,7 +1,7 @@
 # Security Scan GitHub Action
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/your-username/github-action-security-scan)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/your-username/github-action-security-scan/test.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Furkhanhash/github-action-security-scan)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Furkhanhash/github-action-security-scan/test.yml)
 
 ## 🚀 Description
 This GitHub Action fetches **security vulnerabilities** from GitHub's **Code Scanning API** and returns counts by severity (`critical`, `high`, `medium`, `low`). It also generates a **JSON report** for high and critical severity issues.
