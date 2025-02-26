@@ -11,14 +11,19 @@ inputs:
 outputs:
   critical_count:
     description: "Number of critical severity vulnerabilities"
+    value: ${{ steps.set_outputs.outputs.critical_count }}
   high_count:
     description: "Number of high severity vulnerabilities"
+    value: ${{ steps.set_outputs.outputs.high_count }}
   medium_count:
     description: "Number of medium severity vulnerabilities"
+    value: ${{ steps.set_outputs.outputs.medium_count }}
   low_count:
     description: "Number of low severity vulnerabilities"
+    value: ${{ steps.set_outputs.outputs.low_count }}
   high_critical_alerts_json:
     description: "Path to JSON file containing high and critical alerts"
+    value: ${{ steps.set_outputs.outputs.high_critical_alerts_json }}
 runs:
   using: "composite"
   steps:
@@ -26,22 +31,49 @@ runs:
       shell: bash
       run: |
         echo "Fetching Security Vulnerabilities..."
-        
+
+        # Fetch security alerts from GitHub API
         response=$(curl -s -H "Authorization: token ${{ inputs.github_token }}" \
         "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts?state=open")
 
-        # Initialize counts
-        critical_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "critical")] | length')
-        high_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "high")] | length')
-        medium_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "medium")] | length')
-        low_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "low")] | length')
+        # Check if response is empty or invalid JSON
+        if [[ -z "$response" || "$response" == "[]" ]]; then
+          echo "No security vulnerabilities found or empty response."
+          echo "critical_count=0" >> $GITHUB_ENV
+          echo "high_count=0" >> $GITHUB_ENV
+          echo "medium_count=0" >> $GITHUB_ENV
+          echo "low_count=0" >> $GITHUB_ENV
+          echo "[]" > high_critical_alerts.json
+          echo "high_critical_alerts_json=$(pwd)/high_critical_alerts.json" >> $GITHUB_ENV
+        else
+          # Extract severity counts
+          critical_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "critical")] | length' || echo 0)
+          high_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "high")] | length' || echo 0)
+          medium_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "medium")] | length' || echo 0)
+          low_count=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "low")] | length' || echo 0)
 
-        # Extract high/critical severity alerts into JSON file
-        high_critical_alerts=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "high" or .rule.security_severity_level == "critical")]')
-        echo "$high_critical_alerts" > high_critical_alerts.json
+          # Store counts in environment variables
+          echo "critical_count=$critical_count" >> $GITHUB_ENV
+          echo "high_count=$high_count" >> $GITHUB_ENV
+          echo "medium_count=$medium_count" >> $GITHUB_ENV
+          echo "low_count=$low_count" >> $GITHUB_ENV
 
+          # Create JSON file **only if high or critical vulnerabilities exist**
+          if [[ "$high_count" -gt 0 || "$critical_count" -gt 0 ]]; then
+            high_critical_alerts=$(echo "$response" | jq '[.[] | select(.rule.security_severity_level == "high" or .rule.security_severity_level == "critical")]' || echo "[]")
+            echo "$high_critical_alerts" > high_critical_alerts.json
+            echo "high_critical_alerts_json=$(pwd)/high_critical_alerts.json" >> $GITHUB_ENV
+          else
+            echo "high_critical_alerts_json=" >> $GITHUB_ENV  # No file created
+          fi
+        fi
+
+    - name: Set Outputs
+      id: set_outputs
+      shell: bash
+      run: |
         echo "critical_count=$critical_count" >> $GITHUB_OUTPUT
         echo "high_count=$high_count" >> $GITHUB_OUTPUT
         echo "medium_count=$medium_count" >> $GITHUB_OUTPUT
         echo "low_count=$low_count" >> $GITHUB_OUTPUT
-        echo "high_critical_alerts_json=high_critical_alerts.json" >> $GITHUB_OUTPUT
+        echo "high_critical_alerts_json=$HIGH_CRITICAL_ALERTS_JSON" >> $GITHUB_OUTPUT

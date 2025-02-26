@@ -6,6 +6,9 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allows pushing changes
+      issues: read  # Allows reading issues
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
