@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Code Scan Check
-        id: code_scan
+        id: scan
         uses: ./
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
