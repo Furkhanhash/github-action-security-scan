@@ -19,7 +19,7 @@ jobs:
 
       - name: Run Security Scan
         id: security_scan
-        uses: your-username/github-action-security-scan@v1
+        uses: Furkhanhash/github-action-security-scan@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 

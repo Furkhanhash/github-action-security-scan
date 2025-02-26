@@ -26,5 +26,5 @@ jobs:
           echo "High Count: ${{ steps.scan.outputs.high_count }}"
           echo "Medium Count: ${{ steps.scan.outputs.medium_count }}"
           echo "Low Count: ${{ steps.scan.outputs.low_count }}"
-          cat ${{ steps.scan.outputs.high_critical_alerts_json }}
+          cat ${{ steps.scan.outputs.high_critical_alerts_json }}"
 
