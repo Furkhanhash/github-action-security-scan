@@ -19,7 +19,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Display Results
+      - name: Display Scan Results
         run: |
-          echo "Alert Count: ${{ steps.code_scan.outputs.alert_count_code }}"
-          echo "Alerts: ${{ steps.code_scan.outputs.high_critical_alerts_code }}"
+          echo "Critical Count: ${{ steps.scan.outputs.critical_count }}"
+          echo "High Count: ${{ steps.scan.outputs.high_count }}"
+          echo "Medium Count: ${{ steps.scan.outputs.medium_count }}"
+          echo "Low Count: ${{ steps.scan.outputs.low_count }}"
+          echo "High-Critical Alerts JSON Path: ${{ steps.scan.outputs.high_critical_alerts_json }}"
+
