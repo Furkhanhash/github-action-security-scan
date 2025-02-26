@@ -1,6 +1,6 @@
 name: "Security Scan Check"
 description: "Fetches security vulnerabilities from GitHub API and returns counts by severity."
-author: "Your GitHub Username or Organization"
+author: "Furkhanhash"
 branding:
   icon: "shield"
   color: "red"
