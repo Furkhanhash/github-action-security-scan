@@ -1,0 +1,22 @@
+### **3️⃣ Create a GitHub Actions Test Workflow (`.github/workflows/test.yml`)**
+
+name: Test GitHub Action
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Code Scan Check
+        id: code_scan
+        uses: ./
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Display Results
+        run: |
+          echo "Alert Count: ${{ steps.code_scan.outputs.alert_count_code }}"
+          echo "Alerts: ${{ steps.code_scan.outputs.high_critical_alerts_code }}"
