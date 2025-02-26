@@ -67,7 +67,7 @@ runs:
             echo "$high_critical_alerts"
             echo "****************"
             cat high_critical_alerts.json
-            echo "high_critical_alerts_json=$(pwd)/high_critical_alerts.json" >> $GITHUB_ENV
+            echo "high_critical_alerts_json=high_critical_alerts.json" >> $GITHUB_ENV
           else
             echo "high_critical_alerts_json=" >> $GITHUB_ENV  # No file created
           fi
@@ -81,4 +81,4 @@ runs:
         echo "high_count=$high_count" >> $GITHUB_OUTPUT
         echo "medium_count=$medium_count" >> $GITHUB_OUTPUT
         echo "low_count=$low_count" >> $GITHUB_OUTPUT
-        echo "high_critical_alerts_json=$HIGH_CRITICAL_ALERTS_JSON" >> $GITHUB_OUTPUT
+        echo "high_critical_alerts_json=$high_critical_alerts_json" >> $GITHUB_OUTPUT
