@@ -7,8 +7,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Allows pushing changes
-      issues: read  # Allows reading issues
+        security-events: read  # Grants permission to read security alerts
+
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
